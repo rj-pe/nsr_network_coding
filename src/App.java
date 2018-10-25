@@ -26,7 +26,7 @@ public class App {
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
 
-        SenderNode sender = new SenderNode(intermediateNodes, ff24, "input.txt");
+        SenderNode sender = new SenderNode(intermediateNodes, ff24, args[0]);
         sender.handle();
 
         //TODO: build a method that verifies contents of the bodies of the sent packet and the rec'vd and decoded packet match.

@@ -27,15 +27,16 @@ public class SenderNode extends Node {
             String line = null;
             while((line = br.readLine()) != null) {
                 // this test is modified to work with Linux packet copying format
-                if (line.startsWith("|0   |")) {
-                    lines.add(line.substring("|0   |".length()));
+                // if (line.startsWith("|0   |")) {
+                lines.add(line);
                     // this break ends readData after first packet is added to lines.
-                    break;
-                }
+                    // break;
+                //}
             }
         } catch(Exception ex) {
             ex.printStackTrace();
         }
+        // Note: convertToBytes method is modified to support linux libpcap library packet format
         for (String line : lines) {
             data.add(convertToBytes(line));
         }
@@ -64,7 +65,12 @@ public class SenderNode extends Node {
     }
 
     private int[] convertToBytes(String line) {
-        String[] bytes = line.split("\\|");
+        // modified for use with linux libpcap library
+        String[] bytes = new String[line.length()/2];
+        for(int i = 0, j = 0; i < line.length() - 1; i = i + 2, j++){
+            bytes[j] =  line.substring(i, i + 2);
+        }
+        // String[] bytes = line.split("\\|");
         int[] data = new int[bytes.length * 2];
         int i = 0;
         for (String bite : bytes) {

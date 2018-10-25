@@ -37,7 +37,7 @@ public class Matrix {
             }
         }
 
-        System.out.println("RESULT: " + rows);
+        //System.out.println("RESULT: " + rows);
     }
 
     public List<Packet> getOriginalPackets() {

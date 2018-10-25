@@ -25,8 +25,8 @@ public class SinkNode extends Node {
 
     private void performGaussianElimination() {
 
-        System.out.println("Performing gaussian elimination on header vectors: " + getReceivedPackets(currentGeneration));
-        System.out.println("Applying the same operations to body vectors to obtain original data");
+        // System.out.println("Performing gaussian elimination on header vectors: " + getReceivedPackets(currentGeneration));
+        // System.out.println("Applying the same operations to body vectors to obtain original data");
 
         Matrix matrix = new Matrix(getReceivedPackets(currentGeneration), getFiniteField());
         matrix.performGaussianElimination();
@@ -37,18 +37,16 @@ public class SinkNode extends Node {
 
     private void flushReceivedData(Matrix matrix) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(name + "-output.txt", true))) {
-            int i = 0;
             for (Packet packet : matrix.getOriginalPackets()) {
+                StringBuilder pad = new StringBuilder();
                 for (int data : packet.body) {
-                    bw.write(Integer.toHexString(data));
-                    if (i % 2 == 1) {
-                        bw.write("|");
-                    }
-                    i++;
+                    pad.append(Integer.toHexString(data));
                 }
-                bw.write("\n");
+                String no_pad = pad.toString();
+                bw.write(no_pad);
+                bw.flush();
             }
-            bw.flush();
+            //bw.write("\n");
         } catch(Exception ex) {
             ex.printStackTrace();
         }

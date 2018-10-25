@@ -34,7 +34,7 @@ public class IntermediateNode extends Node {
                 ff.multiplyPacketBy(packet, coefficient);
                 ff.addPackets(packetToSend, packet);
             }
-            System.out.println("applying random coefficients: " + Arrays.asList(coefficients));
+            // System.out.println("applying random coefficients: " + Arrays.asList(coefficients));
             for (Node node: getNodesToForward()) {
                 node.onPacketReceived(packetToSend);
             }
