@@ -30,8 +30,13 @@ public class Matrix {
             }
         }
 
+        /// Matrix is now upper triangular.
+
         for (int i = rows.size() - 1; i >= 0; i--) {
+            /// Starting with the last row in the matrix. Each row stored as a packet object.
             Packet packetToAdd = rows.get(i);
+            /// For each of the preceding rows (w.r.t the current row) multiply each preceding row by its ith header
+            //  element. Add the result to the preceding row.
             for (int j = i - 1; j >= 0; j--) {
                 finiteField.addPackets(rows.get(j), finiteField.multiplyPacketBy(packetToAdd.clone(), rows.get(j).header[i]));
             }
@@ -48,6 +53,9 @@ public class Matrix {
         convertToLeadingNonZero(0);
     }
 
+    /// convertToLeadingNonZero Rearranges the matrix so that the first row
+    //  in the matrix has a non-zero value at row 1 col 1
+    //  (numbers above refer to positions in the matrix as opposed to their corresponding array indices)
     private void convertToLeadingNonZero(int position) {
         if (position >= rows.size()) {
             throw new ArrayIndexOutOfBoundsException();

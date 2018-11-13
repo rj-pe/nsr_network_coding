@@ -3,7 +3,8 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Collections;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class SinkNode extends Node {
@@ -19,6 +20,7 @@ public class SinkNode extends Node {
 
     public void handle() {
         if (getReceivedPackets().get(currentGeneration).size() >= getNetworkMinCut()) {
+
             performGaussianElimination();
         }
     }
@@ -27,7 +29,8 @@ public class SinkNode extends Node {
 
         // System.out.println("Performing gaussian elimination on header vectors: " + getReceivedPackets(currentGeneration));
         // System.out.println("Applying the same operations to body vectors to obtain original data");
-
+        Logger logger = Logger.getLogger("log");
+        logger.log(Level.INFO, String.format("%s:  %s", name, getReceivedPackets(currentGeneration)));
         Matrix matrix = new Matrix(getReceivedPackets(currentGeneration), getFiniteField());
         matrix.performGaussianElimination();
 
@@ -46,7 +49,6 @@ public class SinkNode extends Node {
                 bw.write(no_pad);
                 bw.flush();
             }
-            //bw.write("\n");
         } catch(Exception ex) {
             ex.printStackTrace();
         }

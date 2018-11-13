@@ -14,13 +14,14 @@ public class SenderNode extends Node {
 
     private int currentGeneration = 1;
 
-    private static final int PACKET_LENGTH = 100;
+    private static final int PACKET_LENGTH = 5;
 
     public SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename) {
         super(nodesToForward, finiteField);
         readData(filename);
     }
-// This function is not storing all of the packets in the input file. Only stores the first packet.
+/// This function only stores one packet per input file. App will need modification if multiple packets need to be
+/// transmitted through the network.
     private void readData(String filename) {
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -29,7 +30,8 @@ public class SenderNode extends Node {
                 // this test is modified to work with Linux packet copying format
                 // if (line.startsWith("|0   |")) {
                 lines.add(line);
-                    // this break ends readData after first packet is added to lines.
+                    // The following break ends readData after first packet is added to lines. If multiple packets
+                    // per file are to be transmitted some modifications will be necessary.
                     // break;
                 //}
             }
@@ -51,7 +53,10 @@ public class SenderNode extends Node {
                 for (int j = 1; j <= getNetworkMinCut(); j++) {
                     int rangeStartIndex = (i-1) * getNetworkMinCut() * PACKET_LENGTH + (j-1) * PACKET_LENGTH;
                     int[] body =  Arrays.copyOfRange(padded, rangeStartIndex, rangeStartIndex + PACKET_LENGTH);
-                    Packet packet = new Packet(generationNumber, getUnitVector(j, getNetworkMinCut()), body);
+                    // changed the first parameter of Packet method call from generationNumber to i
+                    Packet packet = new Packet(i, getUnitVector(j, getNetworkMinCut()), body);
+
+                    /// store the packet into corresponding class field-- receivedPackets
                     onPacketReceived(packet);
                 }
             }
@@ -65,12 +70,11 @@ public class SenderNode extends Node {
     }
 
     private int[] convertToBytes(String line) {
-        // modified for use with linux libpcap library
+        /// This method modified from original for use with a packet copied as a hexstream.
         String[] bytes = new String[line.length()/2];
         for(int i = 0, j = 0; i < line.length() - 1; i = i + 2, j++){
             bytes[j] =  line.substring(i, i + 2);
         }
-        // String[] bytes = line.split("\\|");
         int[] data = new int[bytes.length * 2];
         int i = 0;
         for (String bite : bytes) {
@@ -86,9 +90,12 @@ public class SenderNode extends Node {
         while(getReceivedPackets(currentGeneration) != null) {
             for (Node nodeToForward: getNodesToForward()) {
                 for (Packet packet : getReceivedPackets(currentGeneration)) {
+                    /// send packets to nodes listed in class field-- nodesToForward
                     nodeToForward.onPacketReceived(packet);
                 }
             }
+            // by the time generation increases to two, all the nodes in nodes to forward have been gone through data in
+            // generation 2,3,.. is lost
             currentGeneration++;
         }
     }

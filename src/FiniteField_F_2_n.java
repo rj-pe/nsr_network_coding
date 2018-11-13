@@ -1,4 +1,8 @@
-import java.util.function.BiFunction;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FiniteField_F_2_n {
 
@@ -6,6 +10,7 @@ public class FiniteField_F_2_n {
     private int elementsCount = 16;
     private int[] degreesAsElements = null;
     private int[] elemsAsPEDegrees = null;
+    private Logger logger;
 
     private static int[][] elementsAsPrimeElementDegrees = new int[][] {
             { 0 }, { 0 }, { 0 }, 										// not implemented
@@ -18,6 +23,7 @@ public class FiniteField_F_2_n {
             { 1, 2, 4, 3, 6, 7, 5 },	// for F 2^3
             { 1, 2, 4, 8, 3, 6, 12, 11, 5, 10, 7, 14, 15, 13, 9, 1 },	// for F 2^4
     };
+
 
     public static FiniteField_F_2_n getInstance() {
         return getInstance(4);
@@ -32,6 +38,7 @@ public class FiniteField_F_2_n {
         this.elementsCount = (int) Math.pow(2, n);
         this.elemsAsPEDegrees = elementsAsPrimeElementDegrees[n];
         this.degreesAsElements = primeElementDegreesAsElements[n];
+        this.logger =  Logger.getLogger("log");
     }
 
     public int getPower() {
@@ -46,7 +53,12 @@ public class FiniteField_F_2_n {
         if (a % elementsCount == 0 || b % elementsCount == 0) {
             return 0;
         }
-        return degreesAsElements[(elemsAsPEDegrees[a % elementsCount] + elemsAsPEDegrees[b % elementsCount]) % (elementsCount - 1)];
+        try{
+            return degreesAsElements[(elemsAsPEDegrees[a % elementsCount] + elemsAsPEDegrees[b % elementsCount]) % (elementsCount - 1)];
+        } catch (Exception ex){
+            logger.log(Level.INFO, ex.toString(), ex);
+            return -1;
+        }
     }
 
     public int add(int a, int b) {
@@ -72,6 +84,7 @@ public class FiniteField_F_2_n {
         }
         return one;
     }
+
 
     public int complementByOne(int value) {
         int result = -1;
