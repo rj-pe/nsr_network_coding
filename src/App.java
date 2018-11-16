@@ -1,4 +1,3 @@
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,21 +28,24 @@ public class App {
         sinkNodes.add(new SinkNode(ff24, "t2"));
 
         /// @debug if hardcoding local encoding vectors, specify them below.
+/*
         int[] l1 = {3, 7, 2};
         int[] l2 = {1, 2, 4};
         int[] l3 = {4, 5, 3};
+*/
         /// end debug
 
         List<Node> intermediateNodes = new ArrayList<>();
-/*
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1"));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
-*/
+
         /// @debug: if hardcoding local encoding vectors, instantiate intermediate nodes using the lines below.
+/*
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1", l1));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2", l2));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3", l3));
+*/
         /// end debug
 
         SenderNode sender = new SenderNode(intermediateNodes, ff24, args[0]);

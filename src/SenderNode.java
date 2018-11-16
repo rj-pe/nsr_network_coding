@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -7,14 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 
-
 public class SenderNode extends Node {
 
-    private List<int[]> data = new ArrayList<int[]>();
+    private List<int[]> data = new ArrayList<>();
 
     private int currentGeneration = 1;
 
-    private static final int PACKET_LENGTH = 5;
+    private static final int PACKET_LENGTH = 100;
 
     public SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename) {
         super(nodesToForward, finiteField);

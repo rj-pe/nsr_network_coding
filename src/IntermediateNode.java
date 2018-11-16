@@ -1,5 +1,3 @@
-
-
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -10,12 +8,19 @@ import java.util.logging.Logger;
 public class IntermediateNode extends Node {
 
     private Random random = new Random();
-
-    private int[] local_encoding_vector;
+    /// @debug
+//    private int[] local_encoding_vector;
+    /// end debug
 
     private String name;
 
     private int currentGeneration = 1;
+    public IntermediateNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name) {
+        super(nodesToForward, finiteField);
+        this.name = name;
+    }
+
+    /// @debug: for hardcoding a local encoding vector uncomment constructor  below and comment out constructor above
 /*
     public IntermediateNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name, int local_encoding_vector[]) {
         super(nodesToForward, finiteField);
@@ -23,13 +28,6 @@ public class IntermediateNode extends Node {
         this.local_encoding_vector = local_encoding_vector;
     }
 */
-
-    /// @debug: for hardcoding a local encoding vector uncomment constructor  below and comment out constructor above
-    public IntermediateNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name, int local_encoding_vector[]) {
-        super(nodesToForward, finiteField);
-        this.name = name;
-        this.local_encoding_vector = local_encoding_vector;
-    }
     /// end debug
 
 
@@ -40,9 +38,9 @@ public class IntermediateNode extends Node {
             Integer[] coefficients = new Integer[getNetworkMinCut()];
             FiniteField_F_2_n ff = getFiniteField();
             Packet packetToSend = getReceivedPackets(currentGeneration).get(0).clone();
-            //int coefficient = random.nextInt(ff.getElementsCount());
+            int coefficient = random.nextInt(ff.getElementsCount());
             /// @debug: for hardcoding a local encoding vector uncomment line below and comment line above
-            int coefficient = local_encoding_vector[0];
+//            int coefficient = local_encoding_vector[0];
             /// end debug
             logger.log(Level.INFO, String.format("%s %d", this.name, coefficient));
 
@@ -51,7 +49,7 @@ public class IntermediateNode extends Node {
             for (int i = 1; i < getNetworkMinCut(); i++) {
                 //coefficient = random.nextInt(ff.getElementsCount());
                 /// @debug: for hardcoding a local encoding vector uncomment line below and comment line above
-                coefficient = local_encoding_vector[i];
+//                coefficient = local_encoding_vector[i];
                 /// end debug
                 logger.log(Level.INFO, String.format("%s %d", this.name ,coefficient));
                 coefficients[i] = coefficient;
