@@ -5,21 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class SenderNode extends Node {
+public abstract class SenderNode extends Node {
 
     private List<int[]> data = new ArrayList<>();
 
     private int currentGeneration = 1;
 
-    private static final int PACKET_LENGTH = 100;
+    int PACKET_LENGTH;
 
-    public SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename) {
+    SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename) {
         super(nodesToForward, finiteField);
-        readData(filename);
     }
 /// This function only stores one packet per input file. App will need modification if multiple packets need to be
 /// transmitted through the network.
-    private void readData(String filename) {
+    void readData(String filename) {
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line = null;
@@ -97,7 +96,10 @@ public class SenderNode extends Node {
         }
     }
 
+/*
     public static void main(String args[]) {
         new SenderNode(null, null, "input.txt");
+
     }
+    */
 }

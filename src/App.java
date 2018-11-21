@@ -6,6 +6,9 @@ import java.util.logging.*;
 
 
 public class App {
+    /// When set, app will run in debug mode allowing local encoding vectors & packet length field to be set manually.
+    static final boolean DEV_MODE = false;
+
 
     public static void main(String args[]) throws IOException {
 
@@ -37,15 +40,16 @@ public class App {
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i1", l1));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i2", l2));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i3", l3));
+            SenderNode sender = new SenderNodeDebug(intermediateNodes, ff24, args[0], 10);
+            sender.handle();
             /// end debug
         } else {
             intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1"));
             intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
             intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
+            SenderNodeProduction sender = new SenderNodeProduction(intermediateNodes, ff24, args[0]);
+            sender.handle();
         }
-
-        SenderNode sender = new SenderNode(intermediateNodes, ff24, args[0]);
-        sender.handle();
 
     }
 }
