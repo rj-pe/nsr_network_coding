@@ -54,6 +54,9 @@ public class Matrix {
         return rows;
     }
 
+    private void convertToLeadingNonZero() {
+        convertToLeadingNonZero(0);
+    }
 
     /// convertToLeadingNonZero Rearranges the matrix so that the first row
     //  in the matrix has a non-zero value at row 1 col 1
