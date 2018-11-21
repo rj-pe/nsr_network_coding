@@ -1,4 +1,7 @@
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Matrix {
@@ -13,6 +16,8 @@ public class Matrix {
     }
 
     public void performGaussianElimination() {
+
+        Logger logger = Logger.getLogger("log");
 
         for (int i = 0; i < rows.size(); i++) {
 
@@ -29,6 +34,8 @@ public class Matrix {
         }
 
         /// Matrix is now upper triangular.
+        logger.log(Level.INFO, String.format("Upper Triangular: %s", rows) );
+
 
         for (int i = rows.size() - 1; i >= 0; i--) {
             /// Starting with the last row in the matrix. Each row stored as a packet object.
@@ -40,7 +47,7 @@ public class Matrix {
             }
         }
 
-        //System.out.println("RESULT: " + rows);
+        logger.log(Level.INFO, String.format("Decoded: %s", rows));
     }
 
     public List<Packet> getOriginalPackets() {
@@ -60,9 +67,13 @@ public class Matrix {
         }
         if (rows.get(position).header[position] == 0) {
             for (int i = position; i < rows.size(); i++) {
+                // Original code was not swapping the elements of the list properly.
+                // Swapping failure was causing a whole lot of trouble as Gaussian elimination was not functioning properly.
+                // Specifically in cases where random encoding vectors begin with a zero.
+
                 if (rows.get(i).header[i] != 0) {
-                    Packet temp = rows.remove(i);
-                    rows.add(position, temp);
+                    Collections.swap(rows, position, i);
+                    break;
                 }
             }
         }
