@@ -41,12 +41,11 @@ public class App {
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i2", l2));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i3", l3));
             /// end debug
+        } else {
+            intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1"));
+            intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
+            intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
         }
-
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1"));
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
-
         SenderNode sender = new SenderNode(intermediateNodes, ff24, args[0]);
         sender.handle();
 
