@@ -6,6 +6,9 @@ import java.util.logging.*;
 
 
 public class App {
+    /// When set, app will run in debug mode allowing local encoding vectors to be set manually.
+    static final boolean DEV_MODE = false;
+
 
     public static void main(String args[]) throws IOException {
 
@@ -27,26 +30,22 @@ public class App {
         sinkNodes.add(new SinkNode(ff24, "t1"));
         sinkNodes.add(new SinkNode(ff24, "t2"));
 
-        /// @debug if hardcoding local encoding vectors, specify them below.
-/*
-        int[] l1 = {3, 7, 2};
-        int[] l2 = {1, 2, 4};
-        int[] l3 = {4, 5, 3};
-*/
-        /// end debug
-
         List<Node> intermediateNodes = new ArrayList<>();
+
+        if(DEV_MODE) {
+            /// @debug if hardcoding local encoding vectors, specify them below.
+            int[] l1 = {3, 7, 2};
+            int[] l2 = {1, 2, 4};
+            int[] l3 = {4, 5, 3};
+            intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i1", l1));
+            intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i2", l2));
+            intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i3", l3));
+            /// end debug
+        }
+
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1"));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2"));
         intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3"));
-
-        /// @debug: if hardcoding local encoding vectors, instantiate intermediate nodes using the lines below.
-/*
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i1", l1));
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i2", l2));
-        intermediateNodes.add(new IntermediateNode(sinkNodes, ff24, "i3", l3));
-*/
-        /// end debug
 
         SenderNode sender = new SenderNode(intermediateNodes, ff24, args[0]);
         sender.handle();
