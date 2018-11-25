@@ -16,7 +16,7 @@ were implemented to maintain a code structure consistent with OOP principles.
 - Fixed a bug in a method, ``convertToLeadingNonZero()``, which is used by the Gaussian elimination algorithm.
 This change ensures that matrix row-swapping occurs. Java's ``Collections.swap()`` method is used.
 
-## [v0.1.0] - 2018-11-24
+## [0.1.0](https://github.com/rj-pe/nsr_network_coding/tree/v0.1.0/src) - 2018-11-24
 ### Added
 - Added logging.
 Logging implemented with Java's basic logging API ``java.util.logging``. Network parameters and any
