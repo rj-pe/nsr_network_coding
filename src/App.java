@@ -7,7 +7,7 @@ import java.util.logging.*;
 
 public class App {
     /// When set, app will run in debug mode allowing local encoding vectors & packet length field to be set manually.
-    static final boolean DEV_MODE = false;
+    static final boolean DEV_MODE = true;
 
 
     public static void main(String args[]) throws IOException {
@@ -34,13 +34,13 @@ public class App {
 
         if(DEV_MODE) {
             /// @debug if hardcoding local encoding vectors, specify them below.
-            int[] l1 = {3, 7, 2};
-            int[] l2 = {1, 2, 4};
-            int[] l3 = {4, 5, 3};
+            int[] l1 = {14, 5, 7};
+            int[] l2 = {6, 4, 13};
+            int[] l3 = {0, 1, 0};
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i1", l1));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i2", l2));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i3", l3));
-            SenderNodeDebug sender = new SenderNodeDebug(intermediateNodes, ff24, args[0], 10);
+            SenderNodeDebug sender = new SenderNodeDebug(intermediateNodes, ff24, args[0], 100);
             sender.handle();
             /// end debug
         } else {
