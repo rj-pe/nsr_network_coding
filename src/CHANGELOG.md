@@ -21,7 +21,7 @@ New intermediate node names are formatted as follows: intermediate node ``n`` in
 Removed the level tag in ``logger.properties``. This change makes `.log` files easier to parse by the testing framework. 
 
 
-## [0.2.0] - 2018-11-24
+## [0.2.0](https://github.com/rj-pe/nsr_network_coding/tree/v0.2.0/src) - 2018-11-24
 ### Added
 - Added ``CHANGELOG.md``. This file will document all project changes.
 - Added a developer mode. 
