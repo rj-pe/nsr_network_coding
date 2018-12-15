@@ -16,7 +16,7 @@ Each class includes full Javadoc documentation.
 - Constructor for ``Node``.
 New constructor requires that the network minimum cut be specified when creating new nodes.
 - Names for intermediate nodes.
-New intermediate node names are formatted as follows: intermediate node ``n`` in layer ``l`` is named ``(l, n)``.qqqqqqq
+New intermediate node names are formatted as follows: intermediate node ``n`` in layer ``l`` is named ``(l, n)``.
 - Reduced logger verbosity.
 Removed the level tag in ``logger.properties``. This change makes `.log` files easier to parse by the testing framework. 
 
