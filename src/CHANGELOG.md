@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
+### Fixed
+- Fixed ``instantiate_network_layers()`` method in ``Topology.java`` class. 
+An indexing error was causing the first layer of intermediate nodes to be skipped.
+### Added
+- Added network parameters in `.log` file. The dynamic network parameters that specify the topology are logged to `
+- Added classes that enable specification of an arbitrary cascading network topology.
+New classes, ``Topology.java`` and ``Layer.java`` implement cascading network topology functionality.
+Each class includes full Javadoc documentation. 
+- Added ``.gitignore`` file.
+### Changed
+- Constructor for ``Node``.
+New constructor requires that the network minimum cut be specified when creating new nodes.
+- Names for intermediate nodes.
+New intermediate node names are formatted as follows: intermediate node ``n`` in layer ``l`` is named ``(l, n)``.qqqqqqq
+- Reduced logger verbosity.
+Removed the level tag in ``logger.properties``. This change makes `.log` files easier to parse by the testing framework. 
+
+
+## [0.2.0] - 2018-11-24
 ### Added
 - Added ``CHANGELOG.md``. This file will document all project changes.
 - Added a developer mode. 
@@ -11,7 +30,7 @@ Developer mode can be set in App.java with the boolean ``DEV_MODE``. Currently t
 that can be hardcoded are local encoding vectors at the intermediate nodes and the 
 packet length field of the sender node. New sender node debug and intermediate node debug classes
 were implemented to maintain a code structure consistent with OOP principles.
-- Added classes that enable specification of an arbitrary cascading network topology.
+
 ### Fixed
 - Fixed a bug in a method, ``convertToLeadingNonZero()``, which is used by the Gaussian elimination algorithm.
 This change ensures that matrix row-swapping occurs. Java's ``Collections.swap()`` method is used.

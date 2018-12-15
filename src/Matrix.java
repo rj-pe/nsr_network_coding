@@ -34,8 +34,7 @@ public class Matrix {
         }
 
         /// Matrix is now upper triangular.
-        logger.log(Level.INFO, String.format("Upper Triangular: %s", rows) );
-
+        // logger.log(Level.INFO, String.format("Upper Triangular: %s", rows) );
 
         for (int i = rows.size() - 1; i >= 0; i--) {
             /// Starting with the last row in the matrix. Each row stored as a packet object.
@@ -46,8 +45,7 @@ public class Matrix {
                 finiteField.addPackets(rows.get(j), finiteField.multiplyPacketBy(packetToAdd.clone(), rows.get(j).header[i]));
             }
         }
-
-        logger.log(Level.INFO, String.format("Decoded: %s", rows));
+        // logger.log(Level.INFO, String.format("Decoded: %s", rows));
     }
 
     public List<Packet> getOriginalPackets() {

@@ -11,8 +11,8 @@ public class IntermediateNodeDebug extends Node {
 
         private int currentGeneration = 1;
 
-    IntermediateNodeDebug(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name, int local_encoding_vector[]) {
-        super(nodesToForward, finiteField);
+    IntermediateNodeDebug(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name, int local_encoding_vector[], int network_min_cut) {
+        super(nodesToForward, finiteField, network_min_cut);
         this.name = name;
         this.local_encoding_vector = local_encoding_vector;
     }
