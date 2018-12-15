@@ -11,8 +11,8 @@ public class SinkNode extends Node {
 
     private int currentGeneration = 1;
 
-    public SinkNode(FiniteField_F_2_n finiteField, String name) {
-        super(Collections.EMPTY_LIST, finiteField);
+    public SinkNode(FiniteField_F_2_n finiteField, String name, int network_min_cut) {
+        super(Collections.EMPTY_LIST, finiteField, network_min_cut);
         this.name = name;
     }
 
@@ -24,11 +24,8 @@ public class SinkNode extends Node {
     }
 
     private void performGaussianElimination() {
-
-        // System.out.println("Performing gaussian elimination on header vectors: " + getReceivedPackets(currentGeneration));
-        // System.out.println("Applying the same operations to body vectors to obtain original data");
-        Logger logger = Logger.getLogger("log");
-        logger.log(Level.INFO, String.format("%s:  %s", name, getReceivedPackets(currentGeneration)));
+        //Logger logger = Logger.getLogger("log");
+        //logger.log(Level.INFO, String.format("%s:  %s", name, getReceivedPackets(currentGeneration)));
         Matrix matrix = new Matrix(getReceivedPackets(currentGeneration), getFiniteField());
         matrix.performGaussianElimination();
 

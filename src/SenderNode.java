@@ -13,8 +13,8 @@ public abstract class SenderNode extends Node {
 
     int PACKET_LENGTH;
 
-    SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename) {
-        super(nodesToForward, finiteField);
+    SenderNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String filename, int network_min_cut) {
+        super(nodesToForward, finiteField, network_min_cut);
     }
 /// This function only stores one packet per input file. App will need modification if multiple packets need to be
 /// transmitted through the network.

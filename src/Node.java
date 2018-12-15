@@ -6,7 +6,7 @@ import java.util.Map;
 
 public abstract class Node {
 
-    private int networkMinCut = 3;
+    private int networkMinCut;
 
     private Map<Integer, List<Packet>> receivedPackets = new HashMap<>();
 
@@ -14,9 +14,10 @@ public abstract class Node {
 
     private FiniteField_F_2_n finiteField;
 
-    public Node(List<Node> nodesToForward, FiniteField_F_2_n finiteField) {
+    public Node(List<Node> nodesToForward, FiniteField_F_2_n finiteField, int network_min_cut) {
         this.nodesToForward = nodesToForward;
         this.finiteField = finiteField;
+        this.networkMinCut = network_min_cut;
     }
 
     public int getNetworkMinCut() {

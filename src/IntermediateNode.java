@@ -9,8 +9,8 @@ public class IntermediateNode extends Node {
     private String name;
 
     private int currentGeneration = 1;
-    public IntermediateNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name) {
-        super(nodesToForward, finiteField);
+    public IntermediateNode(List<Node> nodesToForward, FiniteField_F_2_n finiteField, String name, int network_min_cut) {
+        super(nodesToForward, finiteField, network_min_cut);
         this.name = name;
     }
 
@@ -22,21 +22,21 @@ public class IntermediateNode extends Node {
             FiniteField_F_2_n ff = getFiniteField();
             Packet packetToSend = getReceivedPackets(currentGeneration).get(0).clone();
             int coefficient = random.nextInt(ff.getElementsCount());
-            logger.log(Level.INFO, String.format("%s %d", this.name, coefficient));
+            logger.log(Level.INFO, String.format("%s ; %d", this.name, coefficient));
 
             coefficients[0] = coefficient;
             ff.multiplyPacketBy(packetToSend, coefficient);
             for (int i = 1; i < getNetworkMinCut(); i++) {
                 coefficient = random.nextInt(ff.getElementsCount());
-                logger.log(Level.INFO, String.format("%s %d", this.name ,coefficient));
+                logger.log(Level.INFO, String.format("%s ; %d", this.name ,coefficient));
                 coefficients[i] = coefficient;
                 Packet packet = getReceivedPackets(currentGeneration).get(i).clone();
                 ff.multiplyPacketBy(packet, coefficient);
                 ff.addPackets(packetToSend, packet);
             }
             for (Node node: getNodesToForward()) {
-                Packet clone_for_sink_node = packetToSend.clone();
-                node.onPacketReceived(clone_for_sink_node);
+                Packet clone_for_next_node = packetToSend.clone();
+                node.onPacketReceived(clone_for_next_node);
             }
             currentGeneration++;
         }
