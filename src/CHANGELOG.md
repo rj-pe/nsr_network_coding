@@ -7,7 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fixed ``instantiate_network_layers()`` method in ``Topology.java`` class. 
 An indexing error was causing the first layer of intermediate nodes to be skipped.
 ### Added
-- Added network parameters in `.log` file. The dynamic network parameters that specify the topology are logged to `
+- Added a parent class ``IntermediateNode.java``.
+Both the production and debug versions of the code inherit from parent.
+- Added network parameters in `.log` file. The dynamic network parameters that specify the 
+topology are logged.
 - Added classes that enable specification of an arbitrary cascading network topology.
 New classes, ``Topology.java`` and ``Layer.java`` implement cascading network topology functionality.
 Each class includes full Javadoc documentation. 
@@ -16,9 +19,13 @@ Each class includes full Javadoc documentation.
 - Constructor for ``Node``.
 New constructor requires that the network minimum cut be specified when creating new nodes.
 - Names for intermediate nodes.
-New intermediate node names are formatted as follows: intermediate node ``n`` in layer ``l`` is named ``(l, n)``.
+New intermediate node names are formatted as follows: 
+intermediate node ``n`` in layer ``l`` is named ``(l, n)``.
 - Reduced logger verbosity.
-Removed the level tag in ``logger.properties``. This change makes `.log` files easier to parse by the testing framework. 
+Removed the level tag in ``logger.properties``. This change makes `.log` files easier to parse by the 
+testing framework. 
+- Changed ``.log`` to comma separated values format. This change allows harvesting of log data using 
+standard CSV style.
 
 
 ## [0.2.0](https://github.com/rj-pe/nsr_network_coding/tree/v0.2.0/src) - 2018-11-24
@@ -53,7 +60,7 @@ delimiter ``|``. This parsing was removed as packets copied from Wireshark do no
 Originally only data that fit into a single generation was being sent through the network. 
 The method was fixed to include the entire contents of the original packet, irrespective of the 
 number of generations required to broadcast a packet through network.
-- Fixed a bug in class ``IntermediateNode``, method ``handle()``. 
+- Fixed a bug in class ``IntermediateNodeProduction``, method ``handle()``. 
 The bug occurs because sink node, t1 modifies each intermediate node’s copy of the outgoing packet. 
 Because of the sequential nature of the program logic, sink node t2 starts to decode only after t1 is 
 completely finished decoding. Because the sink nodes were not getting their own copy of the 

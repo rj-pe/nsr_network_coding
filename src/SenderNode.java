@@ -95,11 +95,4 @@ public abstract class SenderNode extends Node {
             currentGeneration++;
         }
     }
-
-/*
-    public static void main(String args[]) {
-        new SenderNode(null, null, "input.txt");
-
-    }
-    */
 }

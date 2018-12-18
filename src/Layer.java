@@ -49,7 +49,7 @@ class Layer {
         for(; j < number_of_nodes_in_layer; j++) {
             String node_name = String.format("(" + layer_name + ", %d)", j);
             logger.log(Level.INFO, node_name);
-            Node node = new IntermediateNode(nodes_to_forward, field, node_name, min_cut);
+            Node node = new IntermediateNodeProduction(nodes_to_forward, field, node_name, min_cut);
             nodes_in_layer.add( node);
         }
         return j;
