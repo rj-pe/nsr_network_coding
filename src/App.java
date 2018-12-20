@@ -36,7 +36,7 @@ public class App {
             sinkNodes.add(new SinkNode(ff24, "t1", 3));
             sinkNodes.add(new SinkNode(ff24, "t2", 3));
             int[] l1 = {13, 11, 9};
-            int[] l2 = {4, 3, 11};
+            int[] l2 = {0, 1, 0};
             int[] l3 = {5, 11, 5};
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i1", l1, 3));
             intermediateNodes.add(new IntermediateNodeDebug(sinkNodes, ff24, "i2", l2, 3));
