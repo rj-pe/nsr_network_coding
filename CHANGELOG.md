@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fixed ``instantiate_network_layers()`` method in ``Topology.java`` class. 
 An indexing error was causing the first layer of intermediate nodes to be skipped.
 ### Added
+- Added edge case handling to address issue #7 .
+During Gaussian elimination any rows which are not encoded are skipped.
 - Added a parent class ``IntermediateNode.java``.
 Both the production and debug versions of the code inherit from parent.
 - Added network parameters in `.log` file. The dynamic network parameters that specify the 
