@@ -1,8 +1,20 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import cc.redberry.rings.*;
+import cc.redberry.rings.poly.*;
+import cc.redberry.rings.poly.univar.*;
+import cc.redberry.rings.poly.multivar.*;
+import cc.redberry.rings.bigint.BigInteger;
+
+import static cc.redberry.rings.poly.PolynomialMethods.*;
+import static cc.redberry.rings.Rings.*;
+
+
+
 
 public class FiniteField_F_2_n {
 
+    private FiniteField<UnivariatePolynomialZp64> gf2_q;
     private int power = 4;
     private int elementsCount = 16;
     private int[] degreesAsElements = null;
@@ -33,6 +45,8 @@ public class FiniteField_F_2_n {
     private FiniteField_F_2_n(int n) {
         this.power = n;
         this.elementsCount = (int) Math.pow(2, n);
+        // TODO replace with call to GF() constructor
+        //this.gf2_q = Rings.GF(2, n);
         this.elemsAsPEDegrees = elementsAsPrimeElementDegrees[n];
         this.degreesAsElements = primeElementDegreesAsElements[n];
         this.logger =  Logger.getLogger("log");
@@ -46,6 +60,7 @@ public class FiniteField_F_2_n {
         return elementsCount;
     }
 
+    // TODO replace with call to the FiniteField multiply() method
     public int multiply(int a, int b) {
         if (a % elementsCount == 0 || b % elementsCount == 0) {
             return 0;
@@ -58,6 +73,7 @@ public class FiniteField_F_2_n {
         }
     }
 
+    // TODO replace with call to the FiniteField add() method
     public int add(int a, int b) {
         return (a % elementsCount) ^ (b % elementsCount);
     }
@@ -82,7 +98,7 @@ public class FiniteField_F_2_n {
         return one;
     }
 
-
+    // TODO this method will be replaced by a call to the FiniteField reciprocal() method
     public int complementByOne(int value) {
         int result = -1;
         if (value != 0) {

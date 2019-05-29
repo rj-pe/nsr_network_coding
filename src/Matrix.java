@@ -29,6 +29,7 @@ class Matrix {
             if( (leading_one = check_for_leading_one( rows.get(i))) < 0){
                 // a leading one was not found
                 // transform the encoding row so that it has a leading one
+                // multiply the entry on the main diagonal by its inverse
                 finiteField.multiplyPacketBy(rows.get(i), finiteField.complementByOne(rows.get(i).header[i]));
                 leading_one = check_for_leading_one(rows.get(i));
             }
