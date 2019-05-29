@@ -1,8 +1,10 @@
+package networkcoding;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
+
 
 
 public class App {
@@ -23,7 +25,7 @@ public class App {
         log.log(Level.INFO, String.format("testing: %s", args[0]));
         // end Logger
 
-        FiniteField_F_2_n ff24 = FiniteField_F_2_n.getInstance();
+        FiniteField_F_2_n ff24 = FiniteField_F_2_n.getInstance(4);
 
 
         List<Node> intermediateNodes = new ArrayList<>();
