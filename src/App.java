@@ -7,10 +7,9 @@ import java.util.logging.*;
 
 public class App {
     /// When DEV_MODE is set, app will run in debug mode allowing local encoding vectors & packet length field to be set manually.
-    static final boolean DEV_MODE = false;
+    private static final boolean DEV_MODE = false;
 
-
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
 
         // Logger saves (to file, fh) local encoding vectors at intermediate nodes & packets recv'd by sink nodes.
         String packet_name = args[0];
@@ -47,10 +46,16 @@ public class App {
         } else { // Production Mode
             // Create the network over which the packets will be sent.
             // Network parameters should be specified when creating the network object.
-            Topology network = new Topology(3, 5, 4, ff24);
+            int numberLayers, nodesPerLayer, numberSinkNodes;
+            numberLayers = 3;
+            nodesPerLayer = 5;
+            numberSinkNodes = 4;
+
             log.log(Level.INFO,
-                    String.format("\nlayers: %d\nnpl: %d\nsinks: %d\n",
-                            network.get_num_layers(), network.get_nodes_per_layer(), network.get_num_sink_nodes()));
+                    String.format("\n%d; %d; %d\n",
+                            numberLayers, nodesPerLayer, numberSinkNodes));
+            Topology network = new Topology(numberLayers, nodesPerLayer, numberSinkNodes, ff24);
+
             // Create the sender node.
             SenderNodeProduction sender = new SenderNodeProduction(network.get_source_list(), ff24, args[0], network.get_min_cut());
             // 'Send' the packet.
