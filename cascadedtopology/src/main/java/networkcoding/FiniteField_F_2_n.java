@@ -1,15 +1,11 @@
+package networkcoding;
+import cc.redberry.rings.poly.FiniteField;
+import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import cc.redberry.rings.*;
-import cc.redberry.rings.poly.*;
-import cc.redberry.rings.poly.univar.*;
-import cc.redberry.rings.poly.multivar.*;
-import cc.redberry.rings.bigint.BigInteger;
 
-import static cc.redberry.rings.poly.PolynomialMethods.*;
-import static cc.redberry.rings.Rings.*;
-
-
+import static cc.redberry.rings.Rings.GF;
 
 
 public class FiniteField_F_2_n {
@@ -34,9 +30,9 @@ public class FiniteField_F_2_n {
     };
 
 
-    public static FiniteField_F_2_n getInstance() {
+/*    public static FiniteField_F_2_n getInstance() {
         return getInstance(4);
-    }
+    }*/
 
     public static FiniteField_F_2_n getInstance(int n) {
         return new FiniteField_F_2_n(n);
@@ -46,7 +42,7 @@ public class FiniteField_F_2_n {
         this.power = n;
         this.elementsCount = (int) Math.pow(2, n);
         // TODO replace with call to GF() constructor
-        //this.gf2_q = Rings.GF(2, n);
+        this.gf2_q = GF(2, n);
         this.elemsAsPEDegrees = elementsAsPrimeElementDegrees[n];
         this.degreesAsElements = primeElementDegreesAsElements[n];
         this.logger =  Logger.getLogger("log");
