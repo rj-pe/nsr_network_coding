@@ -1,9 +1,8 @@
 package networkcoding;
+import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class IntermediateNodeDebug extends IntermediateNode {
+public class IntermediateNodeDebug extends IntermediateNode implements Serializable {
         /// @debug
         private int[] local_encoding_vector;
         /// end debug
@@ -17,7 +16,7 @@ public class IntermediateNodeDebug extends IntermediateNode {
         public void handle() {
             if (getReceivedPackets(currentGeneration).size() >= getNetworkMinCut()) {
                 instantiate_handle_objects();
-                Packet packetToSend = getReceivedPackets(currentGeneration).get(0).clone();
+                //Packet packetToSend = getReceivedPackets(currentGeneration).get(0).clone();
                 /// @debug
                 coefficient = local_encoding_vector[0];
                 /// end @debug
@@ -29,7 +28,7 @@ public class IntermediateNodeDebug extends IntermediateNode {
                     coefficient = local_encoding_vector[i];
                     /// end @debug
                    Packet packet = get_next_packet(coefficient, i);
-                    network_coding(packet, coefficient);
+                   network_coding(packet, coefficient);
                 }
 
                 log_encoding_vector();

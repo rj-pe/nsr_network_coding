@@ -1,24 +1,24 @@
 package networkcoding;
+
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
-class Matrix {
+class PacketMatrix implements Serializable {
 
     private FiniteField_F_2_n finiteField = null;
 
     private List<Packet> rows;
+    private muni.fi.gf2n.classes.Matrix longMatrix;
 
-    Matrix(List<Packet> rows, FiniteField_F_2_n finiteField) {
+    PacketMatrix(List<Packet> rows, FiniteField_F_2_n finiteField) {
         this.rows = rows;
         this.finiteField = finiteField;
+        this.longMatrix = new muni.fi.gf2n.classes.Matrix(this.toLongArr());
     }
 
     void performGaussianElimination() {
-
-        Logger logger = Logger.getLogger("log");
 
         for (int i = 0; i < rows.size(); i++) {
             int leading_one ;
@@ -31,7 +31,7 @@ class Matrix {
                 // a leading one was not found
                 // transform the encoding row so that it has a leading one
                 // multiply the entry on the main diagonal by its inverse
-                finiteField.multiplyPacketBy(rows.get(i), finiteField.complementByOne(rows.get(i).header[i]));
+                finiteField.multiplyPacketBy(rows.get(i), finiteField.reciprocal(rows.get(i).header[i]));
                 leading_one = check_for_leading_one(rows.get(i));
             }
             // check: is the rest of the encoding row 0's?
@@ -42,7 +42,8 @@ class Matrix {
                     // add to each jth row the ith row multiplied by the header
                     finiteField.addPackets(
                             rows.get(j),
-                            finiteField.multiplyPacketBy(rows.get(i).clone(), rows.get(j).header[i]));
+                            finiteField.multiplyPacketBy(
+                                    (Packet) UnoptimizedDeepCopy.copy(rows.get(i)), rows.get(j).header[i]));
                 }
             }
         }
@@ -60,11 +61,11 @@ class Matrix {
                 for (int j = i - 1; j >= 0; j--) {
                     finiteField.addPackets(
                             rows.get(j),
-                            finiteField.multiplyPacketBy(packetToAdd.clone(), rows.get(j).header[i]));
+                            finiteField.multiplyPacketBy(
+                                    (Packet) UnoptimizedDeepCopy.copy(packetToAdd), rows.get(j).header[i]));
                 }
             }
         }
-        // logger.log(Level.INFO, String.format("Decoded: %s", rows));
     }
 
     List<Packet> getOriginalPackets() {
@@ -138,4 +139,35 @@ class Matrix {
         }
         return 0;
     }
+
+    private long[][] toLongArr(){
+        int rows = this.rows.size();
+        int header_len = this.rows.get(0).header.length;
+        int body_len = this.rows.get(0).body.length;
+        int columns = header_len + body_len;
+        long[][] elements= new long[rows][columns];
+        for(int i_row = 0; i_row < rows; i_row++){
+            for(int i_head = 0; i_head < header_len; i_head++){
+                elements[i_row][i_head] = (long) this.rows.get(i_row).header[i_head];
+            }
+            for(int i_pack = 0; i_pack < body_len; i_pack++){
+                elements[i_row][header_len + i_pack] = (long) this.rows.get(i_row).body[i_pack];
+            }
+        }
+        return elements;
+    }
+    private void toPackets(){
+        int rows = this.rows.size();
+        int header_len = this.rows.get(0).header.length;
+        int body_len = this.rows.get(0).body.length;
+        for(int i_row = 0; i_row < rows; i_row++){
+            for(int i_head = 0; i_head < header_len; i_head++){
+                this.rows.get(i_row).header[i_head] = (int) this.longMatrix.getElement(i_row,i_head);
+            }
+            for(int i_pack = 0; i_pack < body_len; i_pack++){
+                this.rows.get(i_row).body[i_pack] = (int) this.longMatrix.getElement(i_row,header_len + i_pack);
+            }
+        }
+    }
+
 }

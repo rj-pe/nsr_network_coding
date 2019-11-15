@@ -1,6 +1,5 @@
 import csv
 import os
-from pathlib import Path
 import subprocess
 import difflib
 import time
@@ -19,13 +18,19 @@ network_min_cut = 0
 
 
 def clean_dir(path):
+    if not sink_node_list:
+        for text_file in glob.glob("*.txt"):
+            os.remove(text_file)
+        return
     for sink in sink_node_list:
-        sink_file = Path(path + "/" + str(sink) + "-output.txt")
-        if sink_file.is_file():
+        sink_file = path + "/" + str(sink) + "-output.txt"
+        try:
             os.remove(sink_file)
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
 
 
-def transfer_java_log(packet_log_file_name, test_log_file_name):
+def transfer_java_log(test_log_file_name):
     # write network parameters to test log
     test_log_file_name.write(
         "intermediate nodes per layer: {}, number of sink nodes: {}, number of layers: {}.\n"
@@ -74,33 +79,17 @@ def get_network_parameters(log_file):
             global sink_node_list
             sink_node_list.append('t' + str(i))
 
-def det(matrix):
-    # compute the determinant of a matrix in the finite field 2^4
-    determinant = 0
-    return determinant
 
-def test_dependence(gen):
-    # checks a vector for linear dependence by computing its determinant.
-    # arithmetic is performed in finite field 2^4.
-    start = (gen - 1) * num_layers
-    end = start + num_layers
-    for
-    matrix = [intermediate_node_dict[y][x] for y in   for x in range(start, end )]
-    if(det(matrix)) != 0:
-        return True
-    else:
-        return False
-
-
-# create timestamped files for the storage files to hold the test results.
+# create timestamped files for the storage files that will hold the test results.
 fname = datetime.datetime.utcfromtimestamp(time.time()).strftime("%y-%m-%d_%H:%M:%S")
-# create a directory to hold test results
+# create a directories to hold test results
 os.makedirs(fname)
 log_dir = os.getcwd() + "/" + fname
+os.makedirs(fname + "/results")
 
-success_file = open(fname + "/" + fname + "_success", 'a')
-exception_fail_file = open(fname + "/" + fname + "_exception_fail", 'a')
-decode_fail_file = open(fname + "/" + fname + "_decode_fail", 'a')
+success_file = open(fname + "/results/" + fname + "_success", 'a')
+exception_fail_file = open(fname + "/results/" + fname + "_exception_fail", 'a')
+decode_fail_file = open(fname + "/results/" + fname + "_decode_fail", 'a')
 
 fail_count = 0
 pass_count = 0
@@ -108,10 +97,9 @@ exception_fail_count = 0
 decode_fail_count = 0
 
 packets_dir = os.getcwd() + "/packets"
-java_app = "App"
-os.chdir("class_files")
+java_app = "task1.jar"
+os.chdir("app")
 clean_dir(os.getcwd())
-
 
 # loop through packets directory.
 for packet in os.listdir(packets_dir):
@@ -122,8 +110,9 @@ for packet in os.listdir(packets_dir):
     sent_packet_len = sum(len(word) for word in sent_packet)
     packet_size = len(sent_packet)
 
+    sink_node_list.clear()
     packet_path = packets_dir + "/" + packet
-    cmd = ["java", java_app, packet_path]
+    cmd = ["java", "-jar", java_app, packet_path]
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out = process.communicate()
     print(out)
@@ -132,8 +121,8 @@ for packet in os.listdir(packets_dir):
     # check: did program run without exceptions?
     if check_for_exception.find("Exception") >= 0:
         # add to fail file: the failed packet, length of the sent packet, and the contents of the java log file.
-        exception_fail_file.write(packet + ', {}, exception case\n'.format(sent_packet_len))
-        transfer_java_log(packet, exception_fail_file)
+        exception_fail_file.write(packet + ', {}, exception case\n{}'.format(sent_packet_len, check_for_exception))
+        transfer_java_log(exception_fail_file)
         fail_count += 1
         exception_fail_count += 1
         clean_dir(os.getcwd())
@@ -162,11 +151,8 @@ for packet in os.listdir(packets_dir):
         # identify the generation where decoding failure occurs
         decode_fail_gen = int(block[0].size / 100)
 
-        # test local encoding vectors for that generation for linear dependence
-        test_dependence(decode_fail_gen)
-
         # print the local encoding vectors used, and the received packets at the sink nodes to the fail file.
-        transfer_java_log(packet, decode_fail_file)
+        transfer_java_log(decode_fail_file)
 
         # print the number of matching characters to fail file.
         decode_fail_file.write("received packet differs after character number {}\n\n".format(block[0].size))
@@ -192,4 +178,3 @@ print("fails: ", fail_count,
       "passes: ", pass_count, '\n\n',
       "exception fails: ", exception_fail_count,
       "decode errors: ", decode_fail_count)
-

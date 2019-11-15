@@ -1,80 +1,48 @@
 package networkcoding;
-import cc.redberry.rings.poly.FiniteField;
-import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import muni.fi.gf2n.classes.GF2N;
 
-import static cc.redberry.rings.Rings.GF;
+import java.io.Serializable;
 
 
-public class FiniteField_F_2_n {
+public class FiniteField_F_2_n implements Serializable {
 
-    private FiniteField<UnivariatePolynomialZp64> gf2_q;
+    private GF2N gf;
+
     private int power = 4;
-    private int elementsCount = 16;
-    private int[] degreesAsElements = null;
-    private int[] elemsAsPEDegrees = null;
-    private Logger logger;
-
-    private static int[][] elementsAsPrimeElementDegrees = new int[][] {
-            { 0 }, { 0 }, { 0 }, 										// not implemented
-            { -1, 0, 1, 3, 2, 6, 4, 5 },									// for F 2^3
-            { -1, 0, 1, 4, 2, 8, 5, 10, 3, 14, 9, 7, 6, 13, 11, 12 },		// for F 2^4
-    };
-
-    private static int[][] primeElementDegreesAsElements = new int[][] {
-            { 0 }, { 0 }, { 0 }, // not implemented
-            { 1, 2, 4, 3, 6, 7, 5 },	// for F 2^3
-            { 1, 2, 4, 8, 3, 6, 12, 11, 5, 10, 7, 14, 15, 13, 9, 1 },	// for F 2^4
-    };
+    private int elementsCount;
 
 
-/*    public static FiniteField_F_2_n getInstance() {
-        return getInstance(4);
-    }*/
-
-    public static FiniteField_F_2_n getInstance(int n) {
-        return new FiniteField_F_2_n(n);
-    }
-
-    private FiniteField_F_2_n(int n) {
+    public FiniteField_F_2_n(int n) {
+        /*
+         *   A list of irreducible polynomials for construction of GF2N.
+         *   2^1,   2^2,   2^3,   2^4,   2^5,   2^6,   2^7,   2^8,   2^9,   2^a,   2^b
+         *   2  ,   7  ,   11 ,   19 ,   37 ,   67 ,   131,   283,   515,  1033,  2053
+         *   See page 378 in Lidl & Niederreiter.
+         */
+        long[] irreducible = {-1, 2, 7, 11, 19, 37, 67, 131, 283, 515, 1033, 2053};
         this.power = n;
         this.elementsCount = (int) Math.pow(2, n);
-        // TODO replace with call to GF() constructor
-        this.gf2_q = GF(2, n);
-        this.elemsAsPEDegrees = elementsAsPrimeElementDegrees[n];
-        this.degreesAsElements = primeElementDegreesAsElements[n];
-        this.logger =  Logger.getLogger("log");
+        this.gf = new GF2N(irreducible[n]);
     }
 
     public int getPower() {
         return power;
     }
 
-    public int getElementsCount() {
+    int getElementsCount() {
         return elementsCount;
     }
 
-    // TODO replace with call to the FiniteField multiply() method
-    public int multiply(int a, int b) {
-        if (a % elementsCount == 0 || b % elementsCount == 0) {
-            return 0;
-        }
-        try{
-            return degreesAsElements[(elemsAsPEDegrees[a % elementsCount] + elemsAsPEDegrees[b % elementsCount]) % (elementsCount - 1)];
-        } catch (Exception ex){
-            logger.log(Level.INFO, ex.toString(), ex);
-            return -1;
-        }
+    private int multiply(int a, int b) {
+        return (int) gf.multiply((long) a, (long) b);
     }
 
-    // TODO replace with call to the FiniteField add() method
-    public int add(int a, int b) {
-        return (a % elementsCount) ^ (b % elementsCount);
+    private int add(int a, int b) {
+        return (int) gf.add((long) a, (long) b);
     }
 
-    public Packet multiplyPacketBy(Packet packet, int by) {
+    Packet multiplyPacketBy(Packet packet, int by) {
         for (int i = 0; i < packet.header.length; i++) {
             packet.header[i] = multiply(packet.header[i], by);
         }
@@ -84,23 +52,25 @@ public class FiniteField_F_2_n {
         return packet;
     }
 
-    public Packet addPackets(Packet one, Packet two) {
+    void addPackets(Packet one, Packet two) {
         for (int i = 0; i < one.header.length; i++) {
             one.header[i] = add(one.header[i], two.header[i]);
         }
         for (int i = 0; i < one.body.length; i++) {
             one.body[i] = add(one.body[i], two.body[i]);
         }
-        return one;
     }
 
-    // TODO this method will be replaced by a call to the FiniteField reciprocal() method
-    public int complementByOne(int value) {
-        int result = -1;
+    int reciprocal(int value) {
+        int result = 0;
         if (value != 0) {
-            result = degreesAsElements[elementsCount - 1 - elemsAsPEDegrees[value % elementsCount]];
+            result = (int) gf.invert((long) value);
         }
         return result;
+    }
+
+    GF2N getGF() {
+        return gf;
     }
 
     public void printSummationTable() {

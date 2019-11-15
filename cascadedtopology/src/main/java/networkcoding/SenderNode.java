@@ -1,14 +1,16 @@
 package networkcoding;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
-public abstract class SenderNode extends Node {
+public abstract class SenderNode extends Node implements Serializable {
 
-    private List<int[]> data = new ArrayList<>();
+    private List<List<Integer>> data = new ArrayList<>();
 
     private int currentGeneration = 1;
 
@@ -40,16 +42,20 @@ public abstract class SenderNode extends Node {
             data.add(convertToBytes(line));
         }
 
-        for (int[] raw_data : data) {
+        for (List<Integer> raw_data : data) {
             // pad data with zeros to fit the packet length
-            int numberOfGenerations = (int)Math.ceil((double)raw_data.length / (PACKET_LENGTH * getNetworkMinCut()));
+            int numberOfGenerations = (int)Math.ceil((double)raw_data.size() / (PACKET_LENGTH * getNetworkMinCut()));
             int length = numberOfGenerations * PACKET_LENGTH * getNetworkMinCut();
-            int[] padded = Arrays.copyOf(raw_data, length);
+            ArrayList<Integer> padded =  new ArrayList<>(Collections.nCopies(length, 0));
+
+            padded.addAll(0, raw_data);
+
             int generationNumber = 1;
             for (int i = 1; i <= numberOfGenerations; i++) {
                 for (int j = 1; j <= getNetworkMinCut(); j++) {
                     int rangeStartIndex = (i-1) * getNetworkMinCut() * PACKET_LENGTH + (j-1) * PACKET_LENGTH;
-                    int[] body =  Arrays.copyOfRange(padded, rangeStartIndex, rangeStartIndex + PACKET_LENGTH);
+                    Integer[] body =
+                            padded.subList(rangeStartIndex, rangeStartIndex + PACKET_LENGTH).toArray(new Integer[0]);
                     // changed the first parameter of Packet method call from generationNumber to i
                     Packet packet = new Packet(i, getUnitVector(j, getNetworkMinCut()), body);
 
@@ -60,18 +66,21 @@ public abstract class SenderNode extends Node {
         }
     }
 
-    private int[] getUnitVector(int x, int length) {
-        int[] vector = new int[length];
+    private Integer[] getUnitVector(int x, int length) {
+        Integer[] vector = new Integer[length];
+        java.util.Arrays.fill(vector, 0);
         vector[x-1] = 1;
         return vector;
     }
 
-    private int[] convertToBytes(String line) {
-        /// This method modified from original for use with a packet copied as a hexstream.
-        String[] bytes = new String[line.length()/2];
-        for(int i = 0, j = 0; i < line.length() - 1; i = i + 2, j++){
-            bytes[j] =  line.substring(i, i + 2);
+    private List<Integer> convertToBytes(String line) {
+
+       /// This method modified from original for use with a packet copied as a hexstream.
+        List<Integer> data = new ArrayList<>();
+        for(char character : line.toCharArray()){
+            data.add(Character.getNumericValue(character));
         }
+        /*
         int[] data = new int[bytes.length * 2];
         int i = 0;
         for (String bite : bytes) {
@@ -79,7 +88,7 @@ public abstract class SenderNode extends Node {
                 data[i++] = Integer.decode("0x" + bite.substring(0, 1));
                 data[i++] = Integer.decode("0x" + bite.substring(1, 2));
             }
-        }
+        }*/
         return data;
     }
 

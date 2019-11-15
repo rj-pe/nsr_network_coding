@@ -1,11 +1,12 @@
 package networkcoding;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public abstract class Node {
+public abstract class Node implements Serializable {
 
     private int networkMinCut;
 
@@ -21,23 +22,23 @@ public abstract class Node {
         this.networkMinCut = network_min_cut;
     }
 
-    public int getNetworkMinCut() {
+    int getNetworkMinCut() {
         return networkMinCut;
     }
 
-    public List<Node> getNodesToForward() {
+    List<Node> getNodesToForward() {
         return nodesToForward;
     }
 
-    public Map<Integer, List<Packet>> getReceivedPackets() {
+    Map<Integer, List<Packet>> getReceivedPackets() {
         return receivedPackets;
     }
 
-    public List<Packet> getReceivedPackets(int generation) {
+    List<Packet> getReceivedPackets(int generation) {
         return receivedPackets.get(generation);
     }
 
-    public FiniteField_F_2_n getFiniteField() {
+    FiniteField_F_2_n getFiniteField() {
         return finiteField;
     }
 

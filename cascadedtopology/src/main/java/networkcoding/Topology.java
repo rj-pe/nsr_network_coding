@@ -1,4 +1,6 @@
 package networkcoding;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * Topology is a class that creates an arbitrarily specified multi-level cascading network topology.
  */
-class Topology {
+class Topology implements Serializable {
     /**
      * The number of sink nodes in the network topology.
      */
@@ -48,7 +50,8 @@ class Topology {
      * @param number_sink_nodes  the number of sink nodes that the network contains.
      * @param field              the finite field over which arithmetic operations will occur.
      */
-    Topology(int number_layers, int nodes_per_layer, int number_sink_nodes, FiniteField_F_2_n field){
+    Topology(int number_layers, int nodes_per_layer, int number_sink_nodes, FiniteField_F_2_n field)
+            throws IOException {
         this.num_sink_nodes = number_sink_nodes;
         this.num_layers = number_layers;
         this.nodes_per_layer = nodes_per_layer;
@@ -64,24 +67,21 @@ class Topology {
     /**
      * Creates the required number of sink nodes in the network.
      * @param number_sink_nodes       the number of sink nodes that the network contains.
-     * @return the number of sink nodes that were successfully created.
      */
-    private int instantiate_sink_nodes(int number_sink_nodes){
+    private void instantiate_sink_nodes(int number_sink_nodes){
         int count = 0;
         for(int i = 0; i < number_sink_nodes; i++){
             String sink_node_name = String.format("t%d", i);
             sink_nodes.add(new SinkNode(field, sink_node_name, min_cut));
             count ++;
         }
-        return count;
     }
 
     /**
      * Creates the required num_layers of intermediate nodes in the network.
      * @param number_of_layers      the number of num_layers in the network
-     * @return the number of num_layers that were successfully created.
      */
-    private int instantiate_network_layers(int number_of_layers){
+    private void instantiate_network_layers(int number_of_layers) throws IOException {
         int count = 0;
         // A container that holds a list of the nodes in the (n+1)th layer.
         // Facilitates the connecting the nth layer of nodes to the (n+1)th layer.
@@ -102,28 +102,26 @@ class Topology {
                 }
             }
         }
-        return count;
     }
 
     /**
      * Creates a single layer object and returns a list of the nodes in the created layer.
      * @param nodes_to_forward      a list of the nodes to which the created layer should forward their data.
      * @param layer_name            the name of the layer.
-     * @return a list of nodes in the layer that has been created.
      */
-    private List<Node> instantiate_single_layer(List<Node> nodes_to_forward, String layer_name, int layer_number){
+    private void instantiate_single_layer(List<Node> nodes_to_forward, String layer_name, int layer_number)
+            throws IOException {
         List<Node> forward = new ArrayList<>(nodes_to_forward);
         // Modify the Layer object in place (w.r.t. to its location in the list).
         // The fill_fields method of the Layer class instantiates the nodes that make up the layer.
         network_layers.get(layer_number).fill_fields(nodes_per_layer, forward, layer_name, field, min_cut);
-        return network_layers.get(layer_number).nodes_in_layer;
     }
     /**
      * "Computes" the network min-cut. In this simplified network topology computing the min-cut is trivial.
      * If a more general network topology needs to be constructed a smarter method would need to be implemented.
      */
     private int compute_min_cut(int number_layers){
-        return number_layers + 1;
+        return nodes_per_layer/*number_layers + 1*/;
     }
     /**
      * Provides access to the layer of nodes closest to the source node.
