@@ -1,13 +1,16 @@
 package networkcoding;
+import java.io.Serializable;
 import java.util.List;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-abstract class IntermediateNode extends Node {
+abstract class IntermediateNode extends Node implements Serializable {
     FiniteField_F_2_n ff;
     Packet packetToSend;
+    FileHandler received_packet_log;
     String name;
-    Logger logger;
+    private Logger logger;
     int currentGeneration = 1;
     int coefficient;
     Integer[] coefficients;
@@ -21,12 +24,12 @@ abstract class IntermediateNode extends Node {
         logger = Logger.getLogger("log");
         coefficients = new Integer[getNetworkMinCut()];
         ff = getFiniteField();
-        packetToSend = getReceivedPackets(currentGeneration).get(0).clone();
+        packetToSend = (Packet) UnoptimizedDeepCopy.copy(getReceivedPackets(currentGeneration).get(0));
     }
 
     Packet get_next_packet(int coefficient, int next){
         coefficients[next] = coefficient;
-        return getReceivedPackets(currentGeneration).get(next).clone();
+        return (Packet) UnoptimizedDeepCopy.copy(getReceivedPackets(currentGeneration).get(next));
     }
 
     void network_coding(Packet packet, int coefficient){
@@ -45,7 +48,7 @@ abstract class IntermediateNode extends Node {
 
     void forward_packet(){
         for (Node node: getNodesToForward()) {
-            Packet clone_for_next_node = packetToSend.clone();
+            Packet clone_for_next_node = (Packet) UnoptimizedDeepCopy.copy(packetToSend);
             node.onPacketReceived(clone_for_next_node);
         }
         currentGeneration++;

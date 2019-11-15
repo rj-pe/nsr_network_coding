@@ -1,10 +1,11 @@
 package networkcoding;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.Serializable;
 import java.util.Collections;
 
 
-public class SinkNode extends Node {
+public class SinkNode extends Node implements Serializable {
 
     private String name;
 
@@ -25,14 +26,14 @@ public class SinkNode extends Node {
     private void performGaussianElimination() {
         //Logger logger = Logger.getLogger("log");
         //logger.log(Level.INFO, String.format("%s:  %s", name, getReceivedPackets(currentGeneration)));
-        Matrix matrix = new Matrix(getReceivedPackets(currentGeneration), getFiniteField());
+        PacketMatrix matrix = new PacketMatrix(getReceivedPackets(currentGeneration), getFiniteField());
         matrix.performGaussianElimination();
 
         flushReceivedData(matrix);
         currentGeneration++;
     }
 
-    private void flushReceivedData(Matrix matrix) {
+    private void flushReceivedData(PacketMatrix matrix) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(name + "-output.txt", true))) {
             for (Packet packet : matrix.getOriginalPackets()) {
                 StringBuilder pad = new StringBuilder();

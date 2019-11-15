@@ -1,24 +1,24 @@
 package networkcoding;
+
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Packet implements Cloneable {
+public class Packet implements Serializable {
 
-    public int generation;
-    public int[] header;
-    public int[] body;
+    int generation;
+    Integer[] header;
+    Integer[] body;
 
-    public Packet(int generation, int[] header, int[] body) {
+    Packet(int generation, Integer[] header, Integer[] body) {
         this.generation = generation;
         this.header = header;
         this.body = body;
     }
     public String toString() {
-        return Arrays.toString(header) + Arrays.toString(body);
-    }
-
-    public Packet clone() {
-        int[] header = Arrays.copyOf(this.header, this.header.length);
-        int[] body = Arrays.copyOf(this.body, this.body.length);
-        return new Packet(generation, header, body);
+        return
+                /*Arrays.toString(
+                        header).replace("[","").replace("]","")
+                        + */Arrays.toString(
+                                body).replace("[","").replace("]","");
     }
 }
